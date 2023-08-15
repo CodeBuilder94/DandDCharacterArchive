@@ -4,6 +4,7 @@ const {
   createUser,
   authenticate
 } = require('./User');
+const {createCharacter} = require('./character');
 
 const syncTables = async()=> {
   const SQL = `
@@ -11,6 +12,7 @@ const syncTables = async()=> {
   DROP TABLE IF EXISTS stats;
   DROP TABLE IF EXISTS characters;
   DROP TABLE IF EXISTS users;
+
   CREATE TABLE users(
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
@@ -18,31 +20,31 @@ const syncTables = async()=> {
   );
 
   CREATE TABLE characters(
-  id SERIAL PRIMARY KEY,
-  "userId" INTEGER REFERENCES users(id)
-  "characterName" VARCHAR(100)
-  );
-
-  CREATE TABLE languages(
     id SERIAL PRIMARY KEY,
-    "characterId" INTEGER REFERENCES characters(id)
-    language VARCHAR(100)
-  );
-
-  CREATE TABLE stats(
-    id SERIAL PRIMARY KEY,
-    "characterId" INTEGER REFERENCES characters(id),
-    hp INTEGER NOT NULL,
-    "tempHP" INTEGER NOT NULL,
-    str INTEGER NOT NULL,
-    dex INTEGER NOT NULL,
-    con INTEGER NOT NULL,
-    int INTEGER NOT NULL,
-    wis INTEGER NOT NULL,
-    char INTEGER NOT NULL,
-    ac INTEGER NOT NULL,
-    speed INTEGER NOT NULL
-  );
+    "userId" INTEGER REFERENCES users(id),
+    "characterName" VARCHAR(100)
+    );
+  
+    CREATE TABLE languages(
+      id SERIAL PRIMARY KEY,
+      "characterId" INTEGER REFERENCES characters(id),
+      language VARCHAR(100)
+    );
+  
+    CREATE TABLE stats(
+      id SERIAL PRIMARY KEY,
+      "characterId" INTEGER REFERENCES characters(id),
+      hp INTEGER NOT NULL,
+      "tempHP" INTEGER NOT NULL,
+      str INTEGER NOT NULL,
+      dex INTEGER NOT NULL,
+      con INTEGER NOT NULL,
+      int INTEGER NOT NULL,
+      wis INTEGER NOT NULL,
+      char INTEGER NOT NULL,
+      ac INTEGER NOT NULL,
+      speed INTEGER NOT NULL
+    );
 
   `;
   await client.query(SQL);
@@ -58,18 +60,40 @@ const syncAndSeed = async()=> {
     createUser({
       username: 'lucy',
       password: 'lucy_password'
-    })
+    }),
   ]);
+
+  const [Errol] = await Promise.all([
+    createCharacter({
+      userId: 1,
+      characterName: "Errol Herron",
+      language: "common",
+      hp: 81,
+      tempHp: 0,
+      str: 13,
+      dex: 18,
+      con: 12,
+      int: 10,
+      wis:14,
+      char: 12,
+      ac:17,
+      speed: 30
+    }),
+  ])
+
   console.log('--- seeded users ---');
   console.log(moe);
   console.log(lucy);
-};
 
+  console.log('---create character---');
+  console.log(Errol);
+};
 
 module.exports = {
   syncAndSeed,
   createUser,
   authenticate,
   getUserByToken,
+  createCharacter,
   client
 };
