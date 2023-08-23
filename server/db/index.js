@@ -67,7 +67,7 @@ const syncAndSeed = async()=> {
     createCharacter({
       userId: 1,
       characterName: "Errol Herron",
-      language: "common",
+      language: ["Common", "Elvish"],
       hp: 81,
       tempHp: 0,
       str: 13,
@@ -87,6 +87,7 @@ const syncAndSeed = async()=> {
 
   console.log('---create character---');
   console.log(Errol);
+
 };
 
 module.exports = {
