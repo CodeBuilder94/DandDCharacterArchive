@@ -42,6 +42,21 @@ const giveLanguage =  async({characterId, language}) =>
 }
 
 
+//get character by characterName
+const getCharacterByName = async(userId, characterName) =>
+{
+    const SQL =`
+        SELECT *
+        FROM characters
+        WHERE characters."characterName" = $1
+        AND
+        WHERE characters."userId" = $2
+    `;
+    //make sure to use a join to gett all data regarding the character
+
+    const {rows} = await client.query(SQL, [characterName, userId]);
+}
+
 module.exports={
     createCharacter
 };
