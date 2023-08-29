@@ -1,4 +1,5 @@
 const client = require('./client');
+const {startingStats} = require('./stats');
 
 //Create character
 const createCharacter = async({userId, characterName, language,hp, tempHp, str, dex, con, int, wis, char, ac, speed}) =>
@@ -17,12 +18,16 @@ const createCharacter = async({userId, characterName, language,hp, tempHp, str, 
         return lang
     }))
 
+    const stats = await startingStats({characterId,hp,tempHp, str, dex, con, int, wis, char, ac, speed})
+    //put in languages
     rows[0].languages = langs;
-
+    //put in starting stats
+    rows[0].stats = stats;
     return rows[0];
 
 }
 
+//set character starting languages
 const giveLanguage =  async({characterId, language}) =>
 {
     const SQL =`
@@ -35,6 +40,7 @@ const giveLanguage =  async({characterId, language}) =>
     
     return rows[0].language;
 }
+
 
 module.exports={
     createCharacter
