@@ -11,11 +11,26 @@ const startingStats = async({characterId,hp,tempHp, str, dex, con, int, wis, cha
     
     const {rows} = await client.query(SQL,[characterId,hp,tempHp, str, dex, con, int, wis, char, ac, speed]);
     delete rows[0].characterId
+    delete rows[0].id;
+    return rows[0];
+}
+
+//get character stats by id
+const getStats = async({characterId}) =>
+{
+    const SQL =`
+        SELECT hp, "tempHP", str, dex, con, int, wis, char, ac, speed
+        FROM stats
+        WHERE stats."characterId" = $1
+    `;
+
+    const {rows} = await client.query(SQL,[characterId]);
     return rows[0];
 }
 
 //update character stats
 
 module.exports={
-    startingStats
+    startingStats,
+    getStats
 };

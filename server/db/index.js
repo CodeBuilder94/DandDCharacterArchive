@@ -5,6 +5,7 @@ const {
   authenticate
 } = require('./User');
 const {createCharacter} = require('./character');
+const {getStats} = require('./stats');
 
 const syncTables = async()=> {
   const SQL = `
@@ -78,7 +79,11 @@ const syncAndSeed = async()=> {
       char: 12,
       ac:17,
       speed: 30
-    }),
+    }),    
+  ])
+
+  const [retriveStats] = await Promise.all([
+    getStats({ characterId:1})
   ])
 
   console.log('--- seeded users ---');
@@ -88,6 +93,9 @@ const syncAndSeed = async()=> {
   console.log('---create character---');
   console.log(Errol);
 
+  console.log('---Get character stats by id---')
+  console.log(retriveStats);
+
 };
 
 module.exports = {
@@ -96,5 +104,6 @@ module.exports = {
   authenticate,
   getUserByToken,
   createCharacter,
+  getStats,
   client
 };
